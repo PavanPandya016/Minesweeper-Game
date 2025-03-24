@@ -1,3 +1,45 @@
+/*
+ * Minesweeper Game in C
+ * Author: Pavan Pandya
+ * GitHub: https://github.com/PavanPandya016
+ * Description: A simple 5x5 terminal-based Minesweeper game where the player selects cells to uncover.
+ *              If a mine is hit, the game ends; otherwise, safe moves are counted.
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define SIZE 5
+#define MAX_ATTEMPTS SIZE * SIZE  // Maximum number of unique cells to be entered
+
+// Function to print the initial game board
+void printTable() {
+    printf("   ");
+    for (int j = 0; j < SIZE; j++) {
+        printf(" %d ", j);
+        if (j < SIZE - 1) printf("|");
+    }
+    printf("\n");
+
+    for (int i = 0; i < SIZE; i++) {
+        printf("  +");
+        for (int j = 0; j < SIZE; j++) {
+            printf("---");
+            if (j < SIZE - 1) printf("+");
+        }
+        printf("\n");
+
+        printf("%d |", i);
+        for (int j = 0; j < SIZE; j++) {
+            printf(" ~ ");  // "~" represents an unrevealed cell
+            if (j < SIZE - 1) printf("|");
+        }
+        printf("\n");
+    }
+
+    printf("  +");
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
