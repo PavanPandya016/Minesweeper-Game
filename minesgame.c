@@ -1,8 +1,17 @@
 /*
  * Minesweeper Game in C
+ * ----------------------
  * Author: Pavan Pandya
  * GitHub: https://github.com/PavanPandya016
+ * 
+ * Description:
+ * A simple console-based Minesweeper game where the player must 
+ * avoid hidden mines while selecting safe cells on a 5x5 grid.
+ * 
+ * License:
+ * This project is open-source and free to use.
  */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

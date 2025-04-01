@@ -52,8 +52,20 @@ Game Over. Here is the matrix:
 0 |  0  |  0  |  1  |  0  |  0  |
 ...
 You Wins: 0
-```
 
-## License
-This project is open-source and free to use.
+```
+/*
+ * Minesweeper Game in C
+ * ----------------------
+ * Author: Pavan Pandya
+ * GitHub: https://github.com/PavanPandya016
+ * 
+ * Description:
+ * A simple console-based Minesweeper game where the player must 
+ * avoid hidden mines while selecting safe cells on a 5x5 grid.
+ * 
+ * License:
+ * This project is open-source and free to use.
+ */
+
 
