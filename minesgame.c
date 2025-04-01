@@ -2,230 +2,114 @@
  * Minesweeper Game in C
  * Author: Pavan Pandya
  * GitHub: https://github.com/PavanPandya016
- * Description: A simple 5x5 terminal-based Minesweeper game where the player selects cells to uncover.
- *              If a mine is hit, the game ends; otherwise, safe moves are counted.
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
 #define SIZE 5
-#define MAX_ATTEMPTS SIZE * SIZE  // Maximum number of unique cells to be entered
+#define MAX_ATTEMPTS (SIZE * SIZE)
 
 // Function to print the initial game board
 void printTable() {
     printf("   ");
     for (int j = 0; j < SIZE; j++) {
         printf(" %d ", j);
-        if (j < SIZE - 1) printf("|");
     }
     printf("\n");
 
     for (int i = 0; i < SIZE; i++) {
         printf("  +");
         for (int j = 0; j < SIZE; j++) {
-            printf("---");
-            if (j < SIZE - 1) printf("+");
+            printf("---+");
         }
-        printf("\n");
-
-        printf("%d |", i);
+        printf("\n%2d |", i);
         for (int j = 0; j < SIZE; j++) {
-            printf(" ~ ");  // "~" represents an unrevealed cell
-            if (j < SIZE - 1) printf("|");
+            printf(" ~ |"); // '~' represents an unrevealed cell
         }
         printf("\n");
     }
-
-    printf("  +");
-
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-#define SIZE 5
-#define MAX_ATTEMPTS SIZE * SIZE  // Maximum number of unique cells to be entered
-
-void printTable() {
-    printf("   ");
-    for (int j = 0; j < SIZE; j++) {
-        printf(" %d ", j);
-        if (j < SIZE - 1) printf("|");
-    }
-    printf("\n");
-
-    for (int i = 0; i < SIZE; i++) {
-        printf("  +");
-        for (int j = 0; j < SIZE; j++) {
-            printf("---");
-            if (j < SIZE - 1) printf("+");
-        }
-        printf("\n");
-
-        printf("%d |", i);
-        for (int j = 0; j < SIZE; j++) {
-            printf(" ~ ");
-            if (j < SIZE - 1) printf("|");
-        }
-        printf("\n");
-    }
-
     printf("  +");
     for (int j = 0; j < SIZE; j++) {
-        printf("---");
-        if (j < SIZE - 1) printf("+");
+        printf("---+");
     }
     printf("\n");
 }
 
+// Initialize the matrix with mines
 void initializeMatrix(int matrix[SIZE][SIZE], int mines) {
-    // Initialize the matrix with 0s
+    srand(time(NULL));
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             matrix[i][j] = 0;
         }
     }
-
-    // Seed the random number generator
-    srand(time(NULL));
-
-    // Place mines at random positions
     for (int i = 0; i < mines; i++) {
         int r, c;
         do {
             r = rand() % SIZE;
             c = rand() % SIZE;
-        } while (matrix[r][c] == 1); // Ensure no duplicate mines
+        } while (matrix[r][c] == 1);
         matrix[r][c] = 1;
     }
 }
 
-int getValidInput(int min, int max, const char* prompt) {
+// Function to get valid user input
+int getValidInput(int min, int max, const char *prompt) {
     int input;
     while (1) {
         printf("%s", prompt);
-        if (scanf("%d", &input) != 1 || input < min || input > max) {
-            printf("Invalid input. Please enter a number between %d and %d.\n", min, max);
-            while (getchar() != '\n'); // Clear input buffer
-        } else {
+        if (scanf("%d", &input) == 1 && input >= min && input <= max) {
             break;
         }
+        printf("Invalid input. Please enter a number between %d and %d.\n", min, max);
+        while (getchar() != '\n');
     }
     return input;
 }
 
-void printMatrix(int matrix[SIZE][SIZE]) {
-    // Print the top border of the matrix table with column numbers
-    printf("\n   ");
-    for (int j = 0; j < SIZE; j++) {
-        printf("| %2d ", j);
-    }
-    printf("|\n");
-
-    // Print the horizontal separator
-    printf("   ");
-    for (int j = 0; j < SIZE; j++) {
-        printf("+----");
-    }
-    printf("+\n");
-
-    // Print the rows with matrix values
-    for (int i = 0; i < SIZE; i++) {
-        printf(" %d ", i); // Print row number
-        for (int j = 0; j < SIZE; j++) {
-            printf("| %2d ", matrix[i][j]);
-        }
-        printf("|\n");
-
-        // Print the horizontal separator after each row
-        printf("   ");
-        for (int j = 0; j < SIZE; j++) {
-            printf("+----");
-        }
-        printf("+\n");
-    }
-}
-
 int main() {
     int matrix[SIZE][SIZE];
-    int mines;
-    int row, col;
-    int continueGame;
-    int winCount = 0;  // Counter for safe moves
-    int hasLost = 0;   // Flag to indicate if the user has lost
-
-    // Store previous coordinates
     int previousInputs[MAX_ATTEMPTS][2];
-    int attempts = 0;
+    int attempts = 0, winCount = 0, hasLost = 0;
     
-    //print welcome
-    printf("\t\t\t Welcome To Game\n");
-    
-    // Print the empty table
-    printf("Here is the initial game board:\n");
+    printf("\t\t\t Welcome To Minesweeper!\n");
     printTable();
-	
-    // Get number of mines
-    mines = getValidInput(1, SIZE * SIZE - 1, "How many mines do you want (1-24): ");
-    
-    // Initialize matrix with mines
+    int mines = getValidInput(1, SIZE * SIZE - 1, "How many mines do you want (1-24)? ");
     initializeMatrix(matrix, mines);
-
-    do {
-        // Get user input for row and column in the range 0-4
-        int validInput = 0;
-        do {
-            row = getValidInput(0, SIZE - 1, "Enter row (0-4): ");
-            col = getValidInput(0, SIZE - 1, "Enter column (0-4): ");
-            
-            // Check if the input has been entered before
-            int isDuplicate = 0;
-            for (int i = 0; i < attempts; i++) {
-                if (previousInputs[i][0] == row && previousInputs[i][1] == col) {
-                    isDuplicate = 1;
-                    break;
-                }
-            }
-
-            if (isDuplicate) {
-                printf("You have already entered this position. Please choose a different cell.\n");
-            } else {
-                previousInputs[attempts][0] = row;
-                previousInputs[attempts][1] = col;
-                attempts++;
-                validInput = 1;
-            }
-        } while (!validInput);
-
-        // Check the condition
-        if (matrix[row][col] == 1) {
-            printf("You hit a mine! You lose.\n");
-            hasLost = 1; // Set loss flag
-            break;       // Exit the loop
-        } else {
-            printf("No mine here.\n");
-            winCount++; // Increment win count for safe moves
-        }
-
-        // Ask if the user wants to continue
-        continueGame = getValidInput(0, 1, "Do you want to continue (1 for yes, 0 for no)? ");
+    
+    while (1) {
+        int row = getValidInput(0, SIZE - 1, "Enter row (0-4): ");
+        int col = getValidInput(0, SIZE - 1, "Enter column (0-4): ");
         
-        if (continueGame == 0) {
-            // Print matrix when user decides to stop
-            printf("Game Over. Here is the matrix:\n");
-            printMatrix(matrix);
-            break; // Exit the loop
+        int duplicate = 0;
+        for (int i = 0; i < attempts; i++) {
+            if (previousInputs[i][0] == row && previousInputs[i][1] == col) {
+                duplicate = 1;
+                break;
+            }
         }
-
-    } while (continueGame == 1);
-
-    // Print the total number of wins or 0 if the user lost
-    if (hasLost) {
-        printf("You Wins: 0\n");
-    } else {
-        printf("You Wins: %d\n", winCount);
+        if (duplicate) {
+            printf("You already selected this position. Try again.\n");
+            continue;
+        }
+        
+        previousInputs[attempts][0] = row;
+        previousInputs[attempts][1] = col;
+        attempts++;
+        
+        if (matrix[row][col] == 1) {
+            printf("BOOM! You hit a mine! Game Over.\n");
+            hasLost = 1;
+            break;
+        } else {
+            printf("Safe move! No mine here.\n");
+            winCount++;
+        }
+        
+        int continueGame = getValidInput(0, 1, "Do you want to continue? (1 for Yes, 0 for No): ");
+        if (continueGame == 0) break;
     }
-
+    printf("Final Score: %d\n", hasLost ? 0 : winCount);
     return 0;
 }
