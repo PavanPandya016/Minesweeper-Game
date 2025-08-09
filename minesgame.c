@@ -174,6 +174,7 @@ int main() {
         if (matrix[row][col] == 1) {
             printf("You hit a mine! You lose.\n");
             hasLost = 1; // Set loss flag
+			printMatrix(matrix);
             break;       // Exit the loop
         } else {
             printf("No mine here.\n");
@@ -201,3 +202,4 @@ int main() {
 
     return 0;
 }
+
